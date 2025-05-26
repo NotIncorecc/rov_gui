@@ -74,13 +74,13 @@ export default function Home() {
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
               onClick={() => console.log('Top Left Main Button clicked!')}
             >
-              Top Left Main Button
+              Activate Multijoy
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
               onClick={() => console.log('Top Left Secondary Button clicked!')}
             >
-              Top Left Secondary Option
+              open terminal
             </button>
           </div>
 
@@ -92,13 +92,13 @@ export default function Home() {
                 className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-300"
                 onClick={() => console.log('Left Horizontal Main Button clicked!')}
               >
-                Left Horizontal Main Action
+                ARM SSH
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
                 onClick={() => console.log('Left Horizontal Secondary Button clicked!')}
               >
-                Left Horizontal Secondary Option
+                open terminal
               </button>
             </div>
 
@@ -108,13 +108,13 @@ export default function Home() {
                 className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
                 onClick={() => console.log('Right Horizontal Main Button clicked!')}
               >
-                Right Horizontal Main Action
+                DRIVE SSH
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
                 onClick={() => console.log('Right Horizontal Secondary Button clicked!')}
               >
-                Right Horizontal Secondary Option
+                open terminal
               </button>
             </div>
           </div>
@@ -125,13 +125,13 @@ export default function Home() {
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
               onClick={() => console.log('Bottom Left Main Button clicked!')}
             >
-              Bottom Left Main Button
+              Activate Cameras
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
               onClick={() => console.log('Bottom Left Secondary Button clicked!')}
             >
-              Bottom Left Secondary Option
+              open terminal
             </button>
           </div>
 
