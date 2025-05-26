@@ -66,10 +66,10 @@ export default function Home() {
 
         {/* Left Column: All other buttons, stacked vertically and center-aligned within their groups */}
         {/* The parent column itself is still aligned to the start (left) */}
-        <div className="w-full md:w-1/2 flex flex-col gap-4 p-2">
+        <div className="w-full md:w-1/4 flex flex-col gap-4 p-2">
 
           {/* Button Group (Main + Secondary) - Now center-aligned within its own container */}
-          <div className="w-full max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto to center block itself */}
+          <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto to center block itself */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
               onClick={() => console.log('Top Left Main Button clicked!')}
@@ -120,7 +120,7 @@ export default function Home() {
           </div>
 
           {/* Button Group (Main + Secondary) - Now center-aligned within its own container, at the very bottom */}
-          <div className="w-full max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
+          <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
               onClick={() => console.log('Bottom Left Main Button clicked!')}
@@ -138,7 +138,7 @@ export default function Home() {
         </div> {/* End of Left Column: All Buttons */}
 
         {/* Right Column: Sensor Info Title and extra space */}
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start p-6 bg-white rounded-xl shadow-md border border-gray-200">
+        <div className="w-full md:w-3/4 flex flex-col items-center md:items-start p-6 bg-white rounded-xl shadow-md border border-gray-200">
           <h2 className="text-3xl font-bold text-gray-700 mb-4">Sensor Info</h2>
           <div className="text-gray-600 text-lg w-full text-center md:text-left">
             <p>This area provides extra space for future sensor data and other elements.</p>
