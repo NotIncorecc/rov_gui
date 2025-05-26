@@ -62,14 +62,14 @@ export default function Home() {
       </div>
 
       {/* New Section: Left-aligned Buttons & Right-aligned Sensor Info */}
-      {/* This container uses flex to arrange its children side-by-side on md screens and above */}
-      <div className="w-full flex flex-col md:flex-row gap-4 mb-4"> {/* Added gap and mb */}
+      <div className="w-full flex flex-col md:flex-row gap-4 mb-4">
 
-        {/* Left Column: All other buttons, stacked vertically and left-aligned */}
-        <div className="w-full md:w-1/2 flex flex-col items-start gap-4 p-2"> {/* items-start for left alignment */}
+        {/* Left Column: All other buttons, stacked vertically and center-aligned within their groups */}
+        {/* The parent column itself is still aligned to the start (left) */}
+        <div className="w-full md:w-1/2 flex flex-col gap-4 p-2">
 
-          {/* Button Group (Main + Secondary) - Now left-aligned and smaller */}
-          <div className="w-full max-w-sm flex flex-col items-start gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200"> {/* Smaller max-w, items-start for left alignment */}
+          {/* Button Group (Main + Secondary) - Now center-aligned within its own container */}
+          <div className="w-full max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto to center block itself */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
               onClick={() => console.log('Top Left Main Button clicked!')}
@@ -84,10 +84,10 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Two Horizontal Groups of Buttons Section - Now contained within the left column, still horizontal */}
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4"> {/* Adjusted gap */}
+          {/* Two Horizontal Groups of Buttons Section - Now contained within the left column, still horizontal, and their internal buttons are centered */}
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Left Button Group (within horizontal section) */}
-            <div className="flex flex-col items-start gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200"> {/* items-start for left alignment */}
+            <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-300"
                 onClick={() => console.log('Left Horizontal Main Button clicked!')}
@@ -103,7 +103,7 @@ export default function Home() {
             </div>
 
             {/* Right Button Group (within horizontal section) */}
-            <div className="flex flex-col items-start gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200"> {/* items-start for left alignment */}
+            <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
                 onClick={() => console.log('Right Horizontal Main Button clicked!')}
@@ -119,8 +119,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Button Group (Main + Secondary) - Now left-aligned and smaller, at the very bottom */}
-          <div className="w-full max-w-sm flex flex-col items-start gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200"> {/* Smaller max-w, items-start for left alignment */}
+          {/* Button Group (Main + Secondary) - Now center-aligned within its own container, at the very bottom */}
+          <div className="w-full max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
               onClick={() => console.log('Bottom Left Main Button clicked!')}
