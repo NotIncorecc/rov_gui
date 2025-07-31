@@ -6,21 +6,37 @@ const execAsync = promisify(exec);
 
 export async function POST(request: NextRequest) {
   try {
-    const { command, commands, type } = await request.json();
+    const { command, commands, type, buttonName } = await request.json();
     
     // Handle multiple commands in terminal
     if (type === 'terminal-multi' && commands && Array.isArray(commands)) {
       console.log(`Opening tmux session with multiple commands:`, commands);
       
-      // Create a unique session name based on timestamp
-      const sessionName = `rover-session-${Date.now()}`;
+      // Create session name based on button name, sanitized for tmux
+      const sanitizedButtonName = (buttonName || 'rover-session').replace(/[^a-zA-Z0-9-_]/g, '-').toLowerCase();
+      const sessionName = sanitizedButtonName;
       
       // Create tmux session and execute commands
       const commandString = commands.join('; ');
-      const tmuxCommand = `tmux new-session -d -s "${sessionName}" -c "$HOME" bash -c "${commandString}; echo 'Commands completed. Terminal session active.'; exec bash"`;
+      
+      // First, create the tmux session with a simple shell
+      const createSessionCommand = `tmux new-session -d -s "${sessionName}"`;
+      
+      // Then send the commands to the session
+      const sendCommandsCommand = `tmux send-keys -t "${sessionName}" '${commandString}' Enter`;
+      
+      // Send a final message
+      const sendFinalMessage = `tmux send-keys -t "${sessionName}" 'echo "Commands completed. Terminal session active."' Enter`;
       
       try {
-        await execAsync(tmuxCommand);
+        // Create the session
+        await execAsync(createSessionCommand);
+        
+        // Send the commands
+        await execAsync(sendCommandsCommand);
+        
+        // Send final message
+        await execAsync(sendFinalMessage);
         
         // Open the tmux session in a new terminal window
         const openTerminalCommand = `gnome-terminal -- tmux attach-session -t "${sessionName}"`;
@@ -30,7 +46,7 @@ export async function POST(request: NextRequest) {
           success: true,
           stdout: `Tmux session '${sessionName}' created with commands: ${commands.join(', ')}`,
           stderr: '',
-          command: tmuxCommand,
+          command: createSessionCommand,
           sessionName: sessionName
         });
       } catch (error: any) {
@@ -40,7 +56,7 @@ export async function POST(request: NextRequest) {
           error: error.message,
           stdout: error.stdout || '',
           stderr: error.stderr || '',
-          command: tmuxCommand
+          command: createSessionCommand
         }, { status: 500 });
       }
     }

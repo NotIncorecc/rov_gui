@@ -42,7 +42,8 @@ const executeMultipleCommands = async (commands: string[], buttonName: string) =
       },
       body: JSON.stringify({ 
         type: 'terminal-multi',
-        commands 
+        commands,
+        buttonName 
       }),
     });
     
@@ -138,9 +139,6 @@ export default function Home() {
                 'ls -la',
                 'pwd',
                 'echo "Terminal ready for multijoy operations"',
-                'gnome-terminal',
-                'ros2 topic echo /cmd_vel',
-                'ros2 run turtlesim turtlesim_node'
               ], 'Multijoy Terminal')}
             >
               open terminal
