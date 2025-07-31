@@ -10,29 +10,37 @@ export async function POST(request: NextRequest) {
     
     // Handle multiple commands in terminal
     if (type === 'terminal-multi' && commands && Array.isArray(commands)) {
-      console.log(`Opening terminal with multiple commands:`, commands);
+      console.log(`Opening tmux session with multiple commands:`, commands);
       
-      // Create a script that opens terminal and executes multiple commands
-      // The terminal will stay open with an interactive bash session after commands complete
+      // Create a unique session name based on timestamp
+      const sessionName = `rover-session-${Date.now()}`;
+      
+      // Create tmux session and execute commands
       const commandString = commands.join('; ');
-      const terminalCommand = `gnome-terminal -- bash -c "${commandString}; echo 'Commands completed. Terminal session active.'; exec bash"`;
+      const tmuxCommand = `tmux new-session -d -s "${sessionName}" -c "$HOME" bash -c "${commandString}; echo 'Commands completed. Terminal session active.'; exec bash"`;
       
       try {
-        await execAsync(terminalCommand);
+        await execAsync(tmuxCommand);
+        
+        // Open the tmux session in a new terminal window
+        const openTerminalCommand = `gnome-terminal -- tmux attach-session -t "${sessionName}"`;
+        await execAsync(openTerminalCommand);
+        
         return NextResponse.json({
           success: true,
-          stdout: `Terminal opened with commands: ${commands.join(', ')}`,
+          stdout: `Tmux session '${sessionName}' created with commands: ${commands.join(', ')}`,
           stderr: '',
-          command: terminalCommand
+          command: tmuxCommand,
+          sessionName: sessionName
         });
       } catch (error: any) {
-        console.error('Terminal command execution error:', error);
+        console.error('Tmux command execution error:', error);
         return NextResponse.json({
           success: false,
           error: error.message,
           stdout: error.stdout || '',
           stderr: error.stderr || '',
-          command: terminalCommand
+          command: tmuxCommand
         }, { status: 500 });
       }
     }
