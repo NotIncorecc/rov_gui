@@ -37,11 +37,7 @@ export async function POST(request: NextRequest) {
         
         // Send final message
         await execAsync(sendFinalMessage);
-        
-        // Open the tmux session in a new terminal window
-        const openTerminalCommand = `gnome-terminal -- tmux attach-session -t "${sessionName}"`;
-        await execAsync(openTerminalCommand);
-        
+
         return NextResponse.json({
           success: true,
           stdout: `Tmux session '${sessionName}' created with commands: ${commands.join(', ')}`,
