@@ -1,13 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
 export async function POST(request: NextRequest) {
   try {
-    const { command } = await request.json();
+    const { command, commands, type } = await request.json();
     
+    // Handle multiple commands in terminal
+    if (type === 'terminal-multi' && commands && Array.isArray(commands)) {
+      console.log(`Opening terminal with multiple commands:`, commands);
+      
+      // Create a script that opens terminal and executes multiple commands
+      const commandString = commands.join('; ');
+      const terminalCommand = `gnome-terminal -- bash -c "${commandString}; exec bash"`;
+      
+      try {
+        await execAsync(terminalCommand);
+        return NextResponse.json({
+          success: true,
+          stdout: `Terminal opened with commands: ${commands.join(', ')}`,
+          stderr: '',
+          command: terminalCommand
+        });
+      } catch (error: any) {
+        console.error('Terminal command execution error:', error);
+        return NextResponse.json({
+          success: false,
+          error: error.message,
+          stdout: error.stdout || '',
+          stderr: error.stderr || '',
+          command: terminalCommand
+        }, { status: 500 });
+      }
+    }
+    
+    // Handle single command (existing functionality)
     if (!command) {
       return NextResponse.json(
         { error: 'Command is required' },

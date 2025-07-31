@@ -30,6 +30,34 @@ const executeCommand = async (command: string, buttonName: string) => {
   }
 };
 
+// Function to execute multiple commands in the same terminal
+const executeMultipleCommands = async (commands: string[], buttonName: string) => {
+  try {
+    console.log(`Opening terminal with multiple commands for ${buttonName}:`, commands);
+    
+    const response = await fetch('/api/execute-command', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        type: 'terminal-multi',
+        commands 
+      }),
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log(`${buttonName} terminal opened successfully:`, result.stdout);
+    } else {
+      console.error(`${buttonName} terminal failed:`, result.error);
+    }
+  } catch (error) {
+    console.error(`Error opening ${buttonName} terminal:`, error);
+  }
+};
+
 export default function Home() {
   return (
     // Main container - using 'p-2' for minimal overall padding to maximize space
@@ -105,7 +133,12 @@ export default function Home() {
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-              onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
+              onClick={() => executeMultipleCommands([
+                'echo "Opening multijoy terminal session..."',
+                'ls -la',
+                'pwd',
+                'echo "Terminal ready for multijoy operations"'
+              ], 'Multijoy Terminal')}
             >
               open terminal
             </button>
@@ -123,7 +156,13 @@ export default function Home() {
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-                onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
+                onClick={() => executeMultipleCommands([
+                  'echo "Setting up ARM development environment..."',
+                  'cd /opt/arm-tools',
+                  'export PATH=$PATH:/opt/arm-tools/bin',
+                  'arm-linux-gnueabihf-gcc --version',
+                  'echo "ARM environment ready!"'
+                ], 'ARM Development Terminal')}
               >
                 open terminal
               </button>
@@ -139,7 +178,13 @@ export default function Home() {
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-                onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
+                onClick={() => executeMultipleCommands([
+                  'echo "Initializing drive control system..."',
+                  'cd /opt/drive-control',
+                  'source ./setup_env.sh',
+                  'systemctl status drive-controller',
+                  'echo "Drive system status checked. Ready for operations!"'
+                ], 'Drive Control Terminal')}
               >
                 open terminal
               </button>
@@ -156,7 +201,13 @@ export default function Home() {
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-              onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
+              onClick={() => executeMultipleCommands([
+                'echo "Initializing camera monitoring terminal..."',
+                'cd /opt/camera-system',
+                'sudo systemctl status camera-service',
+                'v4l2-ctl --list-devices',
+                'echo "Camera system diagnostics complete. Terminal ready for monitoring!"'
+              ], 'Camera Monitoring Terminal')}
             >
               open terminal
             </button>
