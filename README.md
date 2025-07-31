@@ -18,6 +18,10 @@ A modern web-based GUI wrapper for robot control and monitoring, built with Next
 - **Real-time Updates**: Server-sent events for live data streaming
 - **API**: Next.js API routes for backend functionality
 
+## Demonstration
+
+![](robot-gui.gif)
+
 ## Prerequisites
 
 Before getting started, ensure you have the following installed on your system:
