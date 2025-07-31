@@ -2,6 +2,7 @@
 import clsx from 'clsx';
 import Image from "next/image";
 import React, {useState} from 'react';
+import { useRouter } from 'next/navigation';
 
 // Function to execute shell commands
 const executeCommand = async (command: string, buttonName: string) => {
@@ -63,6 +64,7 @@ const executeMultipleCommands = async (commands: string[], buttonName: string) =
 
 
 export default function Home() {
+  const router = useRouter();
 
   const [armColor, setArmColor] = useState('gray');
   const [driveColor, setDriveColor] = useState('gray');
@@ -154,7 +156,7 @@ export default function Home() {
                     'bg-green-500 hover:bg-green-600 focus:ring-green-300': multijoyColor === 'green',
                   }
                 )}
-              onClick={() => executeCommand('echo "Opening multijoy terminal session..."', 'Activate Multijoy')}
+              onClick={() => router.push('/terminal/multijoy-terminal')}
             >
               open terminal
             </button>
@@ -181,7 +183,7 @@ export default function Home() {
                     'bg-green-500 hover:bg-green-600 focus:ring-green-300': armColor === 'green',
                   }
                 )}
-                onClick={() => executeCommand('echo "opening arm ssh terminal session..."', 'ARM SSH')}
+                onClick={() => router.push('/terminal/arm-ssh-terminal')}
               >
                 open terminal
               </button>
@@ -206,7 +208,7 @@ export default function Home() {
                     'bg-green-500 hover:bg-green-600 focus:ring-green-300': driveColor === 'green',
                   }
                 )}
-                onClick={() => executeCommand('echo "opening drive ssh terminal session..."', 'DRIVE SSH')}
+                onClick={() => router.push('/terminal/drive-ssh-terminal')}
               >
                 open terminal
               </button>
@@ -232,7 +234,7 @@ export default function Home() {
                     'bg-green-500 hover:bg-green-600 focus:ring-green-300': cameraColor === 'green',
                   }
                 )}
-              onClick={() => executeCommand('echo "opening camera monitoring terminal session..."', 'Camera Monitoring Terminal')}
+              onClick={() => router.push('/terminal/camera-monitoring-terminal')}
             >
               open terminal
             </button>
