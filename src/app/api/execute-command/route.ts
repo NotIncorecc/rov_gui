@@ -13,8 +13,9 @@ export async function POST(request: NextRequest) {
       console.log(`Opening terminal with multiple commands:`, commands);
       
       // Create a script that opens terminal and executes multiple commands
+      // The terminal will stay open with an interactive bash session after commands complete
       const commandString = commands.join('; ');
-      const terminalCommand = `gnome-terminal -- bash -c "${commandString}; exec bash"`;
+      const terminalCommand = `gnome-terminal -- bash -c "${commandString}; echo 'Commands completed. Terminal session active.'; exec bash"`;
       
       try {
         await execAsync(terminalCommand);

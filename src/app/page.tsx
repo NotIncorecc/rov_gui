@@ -110,7 +110,7 @@ export default function Home() {
       <div className="w-full max-w-2xl px-2 mb-4">
         <button
           className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300"
-          onClick={() => executeCommand('echo "Master Control Activated"', 'Master Control')}
+          onClick={() => executeCommand('gnome-terminal', 'Master Control')}
         >
           Master Control Button
         </button>
@@ -137,7 +137,10 @@ export default function Home() {
                 'echo "Opening multijoy terminal session..."',
                 'ls -la',
                 'pwd',
-                'echo "Terminal ready for multijoy operations"'
+                'echo "Terminal ready for multijoy operations"',
+                'gnome-terminal',
+                'ros2 topic echo /cmd_vel',
+                'ros2 run turtlesim turtlesim_node'
               ], 'Multijoy Terminal')}
             >
               open terminal
