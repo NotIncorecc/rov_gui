@@ -1,6 +1,7 @@
 "use client";
+import clsx from 'clsx';
 import Image from "next/image";
-import React from 'react';
+import React, {useState} from 'react';
 
 // Function to execute shell commands
 const executeCommand = async (command: string, buttonName: string) => {
@@ -59,7 +60,15 @@ const executeMultipleCommands = async (commands: string[], buttonName: string) =
   }
 };
 
+
+
 export default function Home() {
+
+  const [armColor, setArmColor] = useState('gray');
+  const [driveColor, setDriveColor] = useState('gray');
+  const [cameraColor, setCameraColor] = useState('gray');
+  const [multijoyColor, setMultijoyColor] = useState('gray');
+
   return (
     // Main container - using 'p-2' for minimal overall padding to maximize space
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-2 font-sans">
@@ -128,17 +137,23 @@ export default function Home() {
           <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto to center block itself */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => executeMultipleCommands([
+              onClick={() => {executeMultipleCommands([
                 'echo "Opening multijoy terminal session..."',
                 'ls -la',
                 'pwd',
                 'echo "Terminal ready for multijoy operations"',
-              ], 'Multijoy Terminal')}
+              ], 'Multijoy Terminal'); setMultijoyColor('green');}}
             >
               Activate Multijoy
             </button>
             <button
-              className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
+              className={clsx(
+                  'w-full py-1 px-2 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1',
+                  {
+                    'bg-gray-500 hover:bg-gray-600 focus:ring-gray-300': multijoyColor === 'gray',
+                    'bg-green-500 hover:bg-green-600 focus:ring-green-300': multijoyColor === 'green',
+                  }
+                )}
               onClick={() => executeCommand('echo "Opening multijoy terminal session..."', 'Activate Multijoy')}
             >
               open terminal
@@ -151,15 +166,21 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-300"
-                onClick={() => executeMultipleCommands([
+                onClick={() => {executeMultipleCommands([
                   'echo "Setting up ARM development environment..."',
                   'echo "ARM environment ready!"'
-                ], 'ARM SSH Terminal')}
+                ], 'ARM SSH Terminal'); setArmColor('green');}}
               >
                 ARM SSH
               </button>
               <button
-                className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                className={clsx(
+                  'w-full py-1 px-2 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1',
+                  {
+                    'bg-gray-500 hover:bg-gray-600 focus:ring-gray-300': armColor === 'gray',
+                    'bg-green-500 hover:bg-green-600 focus:ring-green-300': armColor === 'green',
+                  }
+                )}
                 onClick={() => executeCommand('echo "opening arm ssh terminal session..."', 'ARM SSH')}
               >
                 open terminal
@@ -170,15 +191,21 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
-                onClick={() => executeMultipleCommands([
+                onClick={() => {executeMultipleCommands([
                   'echo "Initializing drive control system..."',
                   'echo "Drive system status checked. Ready for operations!"'
-                ], 'Drive SSH Terminal')}
+                ], 'Drive SSH Terminal'); setDriveColor('green');}}
               >
                 DRIVE SSH
               </button>
               <button
-                className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                className={clsx(
+                  'w-full py-1 px-2 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1',
+                  {
+                    'bg-gray-500 hover:bg-gray-600 focus:ring-gray-300': driveColor === 'gray',
+                    'bg-green-500 hover:bg-green-600 focus:ring-green-300': driveColor === 'green',
+                  }
+                )}
                 onClick={() => executeCommand('echo "opening drive ssh terminal session..."', 'DRIVE SSH')}
               >
                 open terminal
@@ -190,15 +217,21 @@ export default function Home() {
           <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => executeMultipleCommands([
+              onClick={() => {executeMultipleCommands([
                 'echo "Initializing camera monitoring terminal..."',
                 'echo "Camera system diagnostics complete. Terminal ready for monitoring!"'
-              ], 'Camera Monitoring Terminal')}
+              ], 'Camera Monitoring Terminal'); setCameraColor('green');}}
             >
               Activate Cameras
             </button>
             <button
-              className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
+              className={clsx(
+                  'w-full py-1 px-2 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1',
+                  {
+                    'bg-gray-500 hover:bg-gray-600 focus:ring-gray-300': cameraColor === 'gray',
+                    'bg-green-500 hover:bg-green-600 focus:ring-green-300': cameraColor === 'green',
+                  }
+                )}
               onClick={() => executeCommand('echo "opening camera monitoring terminal session..."', 'Camera Monitoring Terminal')}
             >
               open terminal
