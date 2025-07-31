@@ -17,6 +17,10 @@ export default function Home() {
         <CameraFeed cameraName="Camera Feed 1" cameraPlaceholder="Placeholder for Camera 1"/>
 
         <CameraFeed cameraName="Camera Feed 2" cameraPlaceholder="Placeholder for Camera 2"/>
+
+        <CameraFeed cameraName="Camera Feed 3" cameraPlaceholder="Placeholder for Camera 3"/>
+
+        <CameraFeed cameraName="Camera Feed 4" cameraPlaceholder="Placeholder for Camera 4"/>
       </div>
 
       <MasterButton />
