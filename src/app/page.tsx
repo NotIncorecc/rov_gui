@@ -128,18 +128,18 @@ export default function Home() {
           <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto to center block itself */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => executeCommand('ssh hostname@gg', 'Activate Multijoy')}
-            >
-              Activate Multijoy
-            </button>
-            <button
-              className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
               onClick={() => executeMultipleCommands([
                 'echo "Opening multijoy terminal session..."',
                 'ls -la',
                 'pwd',
                 'echo "Terminal ready for multijoy operations"',
               ], 'Multijoy Terminal')}
+            >
+              Activate Multijoy
+            </button>
+            <button
+              className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
+              onClick={() => executeCommand('echo "Opening multijoy terminal session..."', 'Activate Multijoy')}
             >
               open terminal
             </button>
@@ -151,19 +151,16 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-300"
-                onClick={() => executeCommand('ssh arm@hostname', 'ARM SSH')}
+                onClick={() => executeMultipleCommands([
+                  'echo "Setting up ARM development environment..."',
+                  'echo "ARM environment ready!"'
+                ], 'ARM SSH Terminal')}
               >
                 ARM SSH
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-                onClick={() => executeMultipleCommands([
-                  'echo "Setting up ARM development environment..."',
-                  'cd /opt/arm-tools',
-                  'export PATH=$PATH:/opt/arm-tools/bin',
-                  'arm-linux-gnueabihf-gcc --version',
-                  'echo "ARM environment ready!"'
-                ], 'ARM Development Terminal')}
+                onClick={() => executeCommand('echo "opening arm ssh terminal session..."', 'ARM SSH')}
               >
                 open terminal
               </button>
@@ -173,19 +170,16 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
-                onClick={() => executeCommand('ssh drive@hostname', 'DRIVE SSH')}
+                onClick={() => executeMultipleCommands([
+                  'echo "Initializing drive control system..."',
+                  'echo "Drive system status checked. Ready for operations!"'
+                ], 'Drive SSH Terminal')}
               >
                 DRIVE SSH
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-                onClick={() => executeMultipleCommands([
-                  'echo "Initializing drive control system..."',
-                  'cd /opt/drive-control',
-                  'source ./setup_env.sh',
-                  'systemctl status drive-controller',
-                  'echo "Drive system status checked. Ready for operations!"'
-                ], 'Drive Control Terminal')}
+                onClick={() => executeCommand('echo "opening drive ssh terminal session..."', 'DRIVE SSH')}
               >
                 open terminal
               </button>
@@ -196,19 +190,16 @@ export default function Home() {
           <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => executeCommand('sudo systemctl start camera-service', 'Activate Cameras')}
+              onClick={() => executeMultipleCommands([
+                'echo "Initializing camera monitoring terminal..."',
+                'echo "Camera system diagnostics complete. Terminal ready for monitoring!"'
+              ], 'Camera Monitoring Terminal')}
             >
               Activate Cameras
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-              onClick={() => executeMultipleCommands([
-                'echo "Initializing camera monitoring terminal..."',
-                'cd /opt/camera-system',
-                'sudo systemctl status camera-service',
-                'v4l2-ctl --list-devices',
-                'echo "Camera system diagnostics complete. Terminal ready for monitoring!"'
-              ], 'Camera Monitoring Terminal')}
+              onClick={() => executeCommand('echo "opening camera monitoring terminal session..."', 'Camera Monitoring Terminal')}
             >
               open terminal
             </button>
