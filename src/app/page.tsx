@@ -2,6 +2,33 @@
 import Image from "next/image";
 import React from 'react';
 
+// Function to execute shell commands
+const executeCommand = async (command: string, buttonName: string) => {
+  try {
+    console.log(`Executing command for ${buttonName}: ${command}`);
+    
+    const response = await fetch('/api/execute-command', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ command }),
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log(`${buttonName} command executed successfully:`, result.stdout);
+      if (result.stderr) {
+        console.warn(`${buttonName} command stderr:`, result.stderr);
+      }
+    } else {
+      console.error(`${buttonName} command failed:`, result.error);
+    }
+  } catch (error) {
+    console.error(`Error executing ${buttonName} command:`, error);
+  }
+};
 
 export default function Home() {
   return (
@@ -55,7 +82,7 @@ export default function Home() {
       <div className="w-full max-w-2xl px-2 mb-4">
         <button
           className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300"
-          onClick={() => console.log('Master Button clicked!')}
+          onClick={() => executeCommand('echo "Master Control Activated"', 'Master Control')}
         >
           Master Control Button
         </button>
@@ -72,13 +99,13 @@ export default function Home() {
           <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto to center block itself */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => console.log('Top Left Main Button clicked!')}
+              onClick={() => executeCommand('ssh hostname@gg', 'Activate Multijoy')}
             >
               Activate Multijoy
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-              onClick={() => console.log('Top Left Secondary Button clicked!')}
+              onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
             >
               open terminal
             </button>
@@ -90,13 +117,13 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-300"
-                onClick={() => console.log('Left Horizontal Main Button clicked!')}
+                onClick={() => executeCommand('ssh arm@hostname', 'ARM SSH')}
               >
                 ARM SSH
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-                onClick={() => console.log('Left Horizontal Secondary Button clicked!')}
+                onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
               >
                 open terminal
               </button>
@@ -106,13 +133,13 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
               <button
                 className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300"
-                onClick={() => console.log('Right Horizontal Main Button clicked!')}
+                onClick={() => executeCommand('ssh drive@hostname', 'DRIVE SSH')}
               >
                 DRIVE SSH
               </button>
               <button
                 className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-                onClick={() => console.log('Right Horizontal Secondary Button clicked!')}
+                onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
               >
                 open terminal
               </button>
@@ -123,13 +150,13 @@ export default function Home() {
           <div className="max-w-sm flex flex-col items-center gap-3 p-4 bg-white rounded-xl shadow-md border border-gray-200 mx-auto"> {/* Changed items-start to items-center, added mx-auto */}
             <button
               className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => console.log('Bottom Left Main Button clicked!')}
+              onClick={() => executeCommand('sudo systemctl start camera-service', 'Activate Cameras')}
             >
               Activate Cameras
             </button>
             <button
               className="w-full py-1 px-2 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded-sm shadow-xs transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-gray-300"
-              onClick={() => console.log('Bottom Left Secondary Button clicked!')}
+              onClick={() => executeCommand('gnome-terminal', 'Open Terminal')}
             >
               open terminal
             </button>
