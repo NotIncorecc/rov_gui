@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import Image from "next/image";
 import React, {useState} from 'react';
 import { useRouter } from 'next/navigation';
+import CameraFeed from '@/components/CameraFeed';
 
 // Function to execute shell commands
 const executeCommand = async (command: string, buttonName: string) => {
@@ -78,44 +79,28 @@ export default function Home() {
       {/* Camera Feeds Section - 4 feeds, bigger, and using full screen width */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         {/* Camera Feed 1 */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border-2 border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-700 p-3 bg-gray-50 border-b border-gray-200">
-            Camera Feed 1
-          </h2>
-          <div className="relative w-full h-80 bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
-            Placeholder for Camera 1
-          </div>
-        </div>
+        <CameraFeed 
+          topicName="/image_raw" 
+          feedTitle="Camera Feed 1" 
+        />
 
         {/* Camera Feed 2 */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border-2 border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-700 p-3 bg-gray-50 border-b border-gray-200">
-            Camera Feed 2
-          </h2>
-          <div className="relative w-full h-80 bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
-            Placeholder for Camera 2
-          </div>
-        </div>
+        <CameraFeed 
+          topicName="/image_raw" 
+          feedTitle="Camera Feed 2" 
+        />
 
         {/* Camera Feed 3 */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border-2 border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-700 p-3 bg-gray-50 border-b border-gray-200">
-            Camera Feed 3
-          </h2>
-          <div className="relative w-full h-80 bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
-            Placeholder for Camera 3
-          </div>
-        </div>
+        <CameraFeed 
+          topicName="/image_raw" 
+          feedTitle="Camera Feed 3" 
+        />
 
         {/* Camera Feed 4 */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border-2 border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-700 p-3 bg-gray-50 border-b border-gray-200">
-            Camera Feed 4
-          </h2>
-          <div className="relative w-full h-80 bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
-            Placeholder for Camera 4
-          </div>
-        </div>
+        <CameraFeed 
+          topicName="/image_raw" 
+          feedTitle="Camera Feed 4" 
+        />
       </div>
 
       {/* Master Button - Remains centered and its size is unchanged */}
