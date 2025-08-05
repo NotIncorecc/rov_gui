@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import fs from 'fs';
-import path from 'path';
-
-const execAsync = promisify(exec);
+import WebSocket from 'ws';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,86 +12,82 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create a unique filename to avoid conflicts
-    const timestamp = Date.now();
-    const imageFilename = `camera_feed_${timestamp}.jpg`;
-    const imagePath = path.join('/tmp', imageFilename);
-
-    try {
-      // Method 1: Try using ros2 topic echo to get raw image data
-      const echoCommand = `timeout 3s ros2 topic echo --once ${topic}`;
+    return new Promise((resolve) => {
+      const ws = new WebSocket('ws://localhost:9090');
+      let imageReceived = false;
       
-      try {
-        const { stdout } = await execAsync(echoCommand);
-        
-        // Check if we got valid topic data
-        if (stdout && stdout.includes('data:')) {
-          // For now, return a placeholder response since parsing ROS message is complex
-          return NextResponse.json(
-            { 
-              success: true, 
-              message: 'Topic accessible but image parsing not implemented',
-              topic: topic,
-              dataReceived: true
-            }
-          );
+      const timeout = setTimeout(() => {
+        if (!imageReceived) {
+          ws.close();
+          resolve(NextResponse.json({ 
+            error: 'Timeout waiting for image from rosbridge',
+            suggestion: 'Check if rosbridge is running: ros2 launch rosbridge_server rosbridge_websocket_launch.xml'
+          }, { status: 408 }));
         }
-      } catch (echoError) {
-        console.log('Topic echo failed, trying alternative method...');
-      }
+      }, 5000);
 
-      // Method 2: Check if topic exists and is publishing
-      try {
-        const listCommand = `ros2 topic list`;
-        const { stdout: topicList } = await execAsync(listCommand);
+      ws.on('open', () => {
+        console.log('Connected to rosbridge');
         
-        if (!topicList.includes(topic)) {
-          return NextResponse.json(
-            { error: `Topic ${topic} not found. Available topics: ${topicList}` },
-            { status: 404 }
-          );
-        }
-
-        // Check topic type
-        const typeCommand = `ros2 topic info ${topic}`;
-        const { stdout: topicInfo } = await execAsync(typeCommand);
-        
-        return NextResponse.json({
-          success: false,
-          error: 'Image processing not yet implemented',
+        // Subscribe to the image topic
+        const subscribeMsg = {
+          op: 'subscribe',
           topic: topic,
-          topicExists: true,
-          topicInfo: topicInfo,
-          message: 'ROS2 topic is accessible but image conversion is pending implementation'
-        });
+          type: 'sensor_msgs/msg/Image',
+          throttle_rate: 500, // Limit to 2 FPS for API calls
+          queue_length: 1
+        };
+        
+        ws.send(JSON.stringify(subscribeMsg));
+      });
 
-      } catch (infoError) {
-        return NextResponse.json(
-          { error: `Failed to get topic info: ${infoError}` },
-          { status: 500 }
-        );
-      }
+      ws.on('message', (data) => {
+        try {
+          const message = JSON.parse(data.toString());
+          
+          if (message.topic === topic && message.msg) {
+            imageReceived = true;
+            clearTimeout(timeout);
+            
+            // For now, return the raw message data
+            // TODO: Convert to actual image format
+            ws.close();
+            
+            resolve(NextResponse.json({
+              success: true,
+              topic: topic,
+              imageData: {
+                width: message.msg.width,
+                height: message.msg.height,
+                encoding: message.msg.encoding,
+                dataLength: message.msg.data ? message.msg.data.length : 0
+              },
+              message: 'Image data received but conversion to viewable format pending'
+            }));
+          }
+        } catch (parseError) {
+          console.error('Error parsing WebSocket message:', parseError);
+        }
+      });
 
-    } catch (commandError) {
-      console.error('ROS command error:', commandError);
-      
-      return NextResponse.json(
-        { 
-          error: 'ROS2 command execution failed', 
-          details: commandError,
-          suggestion: 'Make sure ROS2 is sourced and rosbridge is running'
-        },
-        { status: 500 }
-      );
-    }
+      ws.on('error', (error) => {
+        clearTimeout(timeout);
+        ws.close();
+        console.error('WebSocket error:', error);
+        resolve(NextResponse.json({ 
+          error: 'Failed to connect to rosbridge',
+          details: error.message,
+          suggestion: 'Start rosbridge: ros2 launch rosbridge_server rosbridge_websocket_launch.xml'
+        }, { status: 500 }));
+      });
+    });
     
   } catch (error: any) {
-    console.error('ROS image API error:', error);
+    console.error('ROS image WebSocket error:', error);
     
     return NextResponse.json({
       success: false,
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      error: error.message
     }, { status: 500 });
   }
 }
