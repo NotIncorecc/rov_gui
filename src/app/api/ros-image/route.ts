@@ -13,7 +13,12 @@ export async function POST(request: NextRequest) {
     }
 
     return new Promise((resolve) => {
-      const ws = new WebSocket('ws://localhost:9090');
+      // Add WebSocket options to prevent the bufferUtil error
+      const ws = new WebSocket('ws://localhost:9090', {
+        perMessageDeflate: false,
+        skipUTF8Validation: true
+      });
+      
       let imageReceived = false;
       
       const timeout = setTimeout(() => {
@@ -29,16 +34,29 @@ export async function POST(request: NextRequest) {
       ws.on('open', () => {
         console.log('Connected to rosbridge');
         
-        // Subscribe to the image topic
-        const subscribeMsg = {
-          op: 'subscribe',
-          topic: topic,
-          type: 'sensor_msgs/msg/Image',
-          throttle_rate: 500, // Limit to 2 FPS for API calls
-          queue_length: 1
-        };
-        
-        ws.send(JSON.stringify(subscribeMsg));
+        try {
+          // Subscribe to the image topic
+          const subscribeMsg = {
+            op: 'subscribe',
+            topic: topic,
+            type: 'sensor_msgs/msg/Image',
+            throttle_rate: 500,
+            queue_length: 1
+          };
+          
+          // Convert to string and send
+          const messageString = JSON.stringify(subscribeMsg);
+          ws.send(messageString);
+          
+        } catch (sendError) {
+          console.error('Error sending subscribe message:', sendError);
+          clearTimeout(timeout);
+          ws.close();
+          resolve(NextResponse.json({ 
+            error: 'Failed to send subscribe message',
+            details: typeof sendError === 'object' && sendError !== null && 'message' in sendError ? (sendError as { message: string }).message : String(sendError)
+          }, { status: 500 }));
+        }
       });
 
       ws.on('message', (data) => {
@@ -49,8 +67,6 @@ export async function POST(request: NextRequest) {
             imageReceived = true;
             clearTimeout(timeout);
             
-            // For now, return the raw message data
-            // TODO: Convert to actual image format
             ws.close();
             
             resolve(NextResponse.json({
@@ -79,6 +95,10 @@ export async function POST(request: NextRequest) {
           details: error.message,
           suggestion: 'Start rosbridge: ros2 launch rosbridge_server rosbridge_websocket_launch.xml'
         }, { status: 500 }));
+      });
+
+      ws.on('close', () => {
+        clearTimeout(timeout);
       });
     });
     

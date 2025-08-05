@@ -22,19 +22,19 @@ export default function CameraFeed({ topicName, feedTitle }: CameraFeedProps) {
           body: JSON.stringify({ topic: topicName }),
         });
 
-        if (response.ok) {
-          const blob = await response.blob();
-          const imageUrl = URL.createObjectURL(blob);
-          setImageSrc(imageUrl);
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
           setIsConnected(true);
-          setError('');
+          setError(`Connected: ${result.message}`);
         } else {
           setIsConnected(false);
-          setError('Failed to fetch image');
+          setError(result.error || 'Unknown error');
         }
       } catch (err) {
         setIsConnected(false);
-        setError('Connection error');
+        setError('Network error');
+        console.error('Fetch error:', err);
       }
     };
 
