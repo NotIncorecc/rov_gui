@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
 
 const execAsync = promisify(exec);
 
@@ -15,59 +17,86 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use ros2 topic to get a single image and convert to base64
-    const command = `timeout 5s ros2 topic echo -n 1 ${topic} | python3 -c "
-import sys
-import base64
-import sensor_msgs.msg
-import cv_bridge
-import rospy
-import numpy as np
-from sensor_msgs.msg import Image
+    // Create a unique filename to avoid conflicts
+    const timestamp = Date.now();
+    const imageFilename = `camera_feed_${timestamp}.jpg`;
+    const imagePath = path.join('/tmp', imageFilename);
 
-# This would need actual ROS implementation
-# For now, return a placeholder command
-print('ROS_IMAGE_DATA_HERE')
-"`;
-
-    // Alternative: Use ros2 run to save image and serve it
-    const saveImageCommand = `ros2 run image_view image_saver image:=${topic} _filename_format:=/tmp/camera_feed.jpg`;
-    
     try {
-      // Execute command to save latest image
-      await execAsync(`timeout 2s ${saveImageCommand}`);
+      // Method 1: Try using ros2 topic echo to get raw image data
+      const echoCommand = `timeout 3s ros2 topic echo --once ${topic}`;
       
-      // Read the saved image file
-      const fs = require('fs');
-      const imagePath = '/tmp/camera_feed.jpg';
-      
-      if (fs.existsSync(imagePath)) {
-        const imageBuffer = fs.readFileSync(imagePath);
+      try {
+        const { stdout } = await execAsync(echoCommand);
         
-        return new NextResponse(imageBuffer, {
-          headers: {
-            'Content-Type': 'image/jpeg',
-            'Cache-Control': 'no-cache',
-          },
-        });
-      } else {
-        throw new Error('Image file not found');
+        // Check if we got valid topic data
+        if (stdout && stdout.includes('data:')) {
+          // For now, return a placeholder response since parsing ROS message is complex
+          return NextResponse.json(
+            { 
+              success: true, 
+              message: 'Topic accessible but image parsing not implemented',
+              topic: topic,
+              dataReceived: true
+            }
+          );
+        }
+      } catch (echoError) {
+        console.log('Topic echo failed, trying alternative method...');
       }
+
+      // Method 2: Check if topic exists and is publishing
+      try {
+        const listCommand = `ros2 topic list`;
+        const { stdout: topicList } = await execAsync(listCommand);
+        
+        if (!topicList.includes(topic)) {
+          return NextResponse.json(
+            { error: `Topic ${topic} not found. Available topics: ${topicList}` },
+            { status: 404 }
+          );
+        }
+
+        // Check topic type
+        const typeCommand = `ros2 topic info ${topic}`;
+        const { stdout: topicInfo } = await execAsync(typeCommand);
+        
+        return NextResponse.json({
+          success: false,
+          error: 'Image processing not yet implemented',
+          topic: topic,
+          topicExists: true,
+          topicInfo: topicInfo,
+          message: 'ROS2 topic is accessible but image conversion is pending implementation'
+        });
+
+      } catch (infoError) {
+        return NextResponse.json(
+          { error: `Failed to get topic info: ${infoError}` },
+          { status: 500 }
+        );
+      }
+
+    } catch (commandError) {
+      console.error('ROS command error:', commandError);
       
-    } catch (error) {
-      // If ROS command fails, return placeholder image
       return NextResponse.json(
-        { error: 'Failed to fetch ROS image', topic },
+        { 
+          error: 'ROS2 command execution failed', 
+          details: commandError,
+          suggestion: 'Make sure ROS2 is sourced and rosbridge is running'
+        },
         { status: 500 }
       );
     }
     
   } catch (error: any) {
-    console.error('ROS image error:', error);
+    console.error('ROS image API error:', error);
     
     return NextResponse.json({
       success: false,
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     }, { status: 500 });
   }
 }
