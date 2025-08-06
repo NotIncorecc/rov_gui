@@ -69,15 +69,27 @@ export async function POST(request: NextRequest) {
             const imageMsg = message.msg;
       
             // For now, create a simple base64 encoded response
-            const imageDataBuffer = Buffer.from(imageMsg.data);
-            const base64Image = imageDataBuffer.toString('base64');
+            //const imageDataBuffer = Buffer.from(imageMsg.data);
+            //const base64Image = imageDataBuffer.toString('base64');
+            /*
+            console.log('Image message details:', {
+              width: imageMsg.width,
+              height: imageMsg.height,
+              encoding: imageMsg.encoding,
+              step: imageMsg.step,
+              is_bigendian: imageMsg.is_bigendian,
+              dataType: typeof imageMsg.data,
+              dataLength: imageMsg.data ? imageMsg.data.length : 0,
+              expectedLength: imageMsg.width * imageMsg.height * (imageMsg.encoding === 'rgb8' ? 3 : imageMsg.encoding === 'mono8' ? 1 : 3),
+              firstFewBytes: imageMsg.data ? imageMsg.data.slice(0, 10) : 'no data'
+            });*/
 
             ws.close();
             
             resolve(NextResponse.json({
               success: true,
               topic: topic,
-              imageBase64: base64Image,
+              imageBase64: imageMsg.data,
               width: imageMsg.width,
               height: imageMsg.height,
               encoding: imageMsg.encoding

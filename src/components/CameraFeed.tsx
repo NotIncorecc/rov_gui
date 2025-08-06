@@ -155,3 +155,48 @@ export default function CameraFeed({ topicName, feedTitle }: CameraFeedProps) {
     </div>
   );
 }
+
+// WebSocket message handling (to be integrated in the appropriate place) -> done it in route.ts
+// ws.on('message', (data) => {
+//   try {
+//     const message = JSON.parse(data.toString());
+    
+//     if (message.topic === topic && message.msg) {
+//       imageReceived = true;
+//       clearTimeout(timeout);
+//       const imageMsg = message.msg;
+
+//       // Debug: Log the actual message structure
+//       console.log('Image message details:', {
+//         width: imageMsg.width,
+//         height: imageMsg.height,
+//         encoding: imageMsg.encoding,
+//         step: imageMsg.step,
+//         is_bigendian: imageMsg.is_bigendian,
+//         dataType: typeof imageMsg.data,
+//         dataLength: imageMsg.data ? imageMsg.data.length : 0,
+//         expectedLength: imageMsg.width * imageMsg.height * (imageMsg.encoding === 'rgb8' ? 3 : imageMsg.encoding === 'mono8' ? 1 : 3),
+//         firstFewBytes: imageMsg.data ? imageMsg.data.slice(0, 10) : 'no data'
+//       });
+
+//       ws.close();
+      
+//       resolve(NextResponse.json({
+//         success: true,
+//         topic: topic,
+//         imageBase64: Buffer.from(imageMsg.data).toString('base64'),
+//         width: imageMsg.width,
+//         height: imageMsg.height,
+//         encoding: imageMsg.encoding,
+//         step: imageMsg.step,
+//         is_bigendian: imageMsg.is_bigendian,
+//         debug: {
+//           dataLength: imageMsg.data.length,
+//           expectedLength: imageMsg.width * imageMsg.height * (imageMsg.encoding === 'rgb8' ? 3 : 1)
+//         }
+//       }));
+//     }
+//   } catch (parseError) {
+//     console.error('Error parsing WebSocket message:', parseError);
+//   }
+// });
