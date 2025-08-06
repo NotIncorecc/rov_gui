@@ -24,17 +24,92 @@ export default function CameraFeed({ topicName, feedTitle }: CameraFeedProps) {
 
         const result = await response.json();
         
-        if (response.ok && result.success) {
+        if (response.ok && result.success && result.imageBase64) {
           setIsConnected(true);
-          setError(`Connected: ${result.message}`);
+          setError('');
+          
+          // Convert ROS image data to canvas
+          const { width, height, encoding, imageBase64 } = result;
+          
+          // Decode base64 to get raw image data
+          const binaryString = atob(imageBase64);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          
+          // Create canvas to render the image
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          
+          if (ctx) {
+            const imageData = ctx.createImageData(width, height);
+            
+            // Handle different encodings
+            if (encoding === 'rgb8') {
+              // RGB8: 3 bytes per pixel
+              for (let i = 0, j = 0; i < bytes.length; i += 3, j += 4) {
+                imageData.data[j] = bytes[i];       // R
+                imageData.data[j + 1] = bytes[i + 1]; // G
+                imageData.data[j + 2] = bytes[i + 2]; // B
+                imageData.data[j + 3] = 255;        // A
+              }
+            } else if (encoding === 'bgr8') {
+              // BGR8: 3 bytes per pixel, swap R and B
+              for (let i = 0, j = 0; i < bytes.length; i += 3, j += 4) {
+                imageData.data[j] = bytes[i + 2];     // R (from B)
+                imageData.data[j + 1] = bytes[i + 1]; // G
+                imageData.data[j + 2] = bytes[i];     // B (from R)
+                imageData.data[j + 3] = 255;        // A
+              }
+            } else if (encoding === 'mono8' || encoding === 'grayscale') {
+              // Grayscale: 1 byte per pixel
+              for (let i = 0, j = 0; i < bytes.length; i++, j += 4) {
+                imageData.data[j] = bytes[i];     // R
+                imageData.data[j + 1] = bytes[i]; // G
+                imageData.data[j + 2] = bytes[i]; // B
+                imageData.data[j + 3] = 255;     // A
+              }
+            } else {
+              // For other formats, try to display as RGB
+              console.warn(`Unsupported encoding: ${encoding}, trying RGB interpretation`);
+              for (let i = 0, j = 0; i < bytes.length && j < imageData.data.length; i += 3, j += 4) {
+                imageData.data[j] = bytes[i] || 0;
+                imageData.data[j + 1] = bytes[i + 1] || 0;
+                imageData.data[j + 2] = bytes[i + 2] || 0;
+                imageData.data[j + 3] = 255;
+              }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Convert canvas to blob URL
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const imageUrl = URL.createObjectURL(blob);
+                setImageSrc(prev => {
+                  if (prev && prev.startsWith('blob:')) {
+                    URL.revokeObjectURL(prev);
+                  }
+                  return imageUrl;
+                });
+              }
+            }, 'image/png', 1.0);
+          }
+          
+        } else if (response.ok && result.success) {
+          setIsConnected(true);
+          setError('Connected but no image data received');
         } else {
           setIsConnected(false);
           setError(result.error || 'Unknown error');
         }
       } catch (err) {
         setIsConnected(false);
-        setError('Network error');
-        console.error('Fetch error:', err);
+        setError('Processing error');
+        console.error('Image processing error:', err);
       }
     };
 

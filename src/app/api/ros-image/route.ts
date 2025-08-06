@@ -66,19 +66,21 @@ export async function POST(request: NextRequest) {
           if (message.topic === topic && message.msg) {
             imageReceived = true;
             clearTimeout(timeout);
-            
+            const imageMsg = message.msg;
+      
+            // For now, create a simple base64 encoded response
+            const imageDataBuffer = Buffer.from(imageMsg.data);
+            const base64Image = imageDataBuffer.toString('base64');
+
             ws.close();
             
             resolve(NextResponse.json({
               success: true,
               topic: topic,
-              imageData: {
-                width: message.msg.width,
-                height: message.msg.height,
-                encoding: message.msg.encoding,
-                dataLength: message.msg.data ? message.msg.data.length : 0
-              },
-              message: 'Image data received but conversion to viewable format pending'
+              imageBase64: base64Image,
+              width: imageMsg.width,
+              height: imageMsg.height,
+              encoding: imageMsg.encoding
             }));
           }
         } catch (parseError) {
